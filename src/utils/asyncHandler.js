@@ -1,13 +1,11 @@
-import { clearConfigCache } from "prettier";
-
 const asyncHandler = (requestHandler) => {
     return (req, res, next) => {
         Promise.resolve(requestHandler(req, res, next))
-            .catch((err) => next(err));
-    };
-};
+            .catch((err) => next(err))
+    }
+}
 
-export { asyncHandler };
+export { asyncHandler }
 
 // const asyncHandler = () => {}
 // const asyncHandler = (func) => () => {}

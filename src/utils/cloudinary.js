@@ -18,6 +18,8 @@ const uploadOnCloudinary = async(localFilePatch) => {
             resource_type: 'auto'
         })
 
+        fs.unlinkSync(localFilePatch)
+
         console.log("file is uploaded on cloudinary",
             response.url
         );
