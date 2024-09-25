@@ -1,52 +1,38 @@
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import usersRoutes from './routes/users.routes.js';
 
-// require('dotenv').config({path: './env'})
-import dotenv from "dotenv"
-import connectDB from "./db/index.js";
-import {app} from './app.js'
-dotenv.config({
-    path: './.env'
-})
+// Initialize the Express application
+const app = express();
 
+// Middleware
+app.use(cors());
+app.use(express.json());
 
+// Routes
+app.use('/api/users', usersRoutes);
 
-connectDB()
-.then(() => {
-    app.listen(process.env.PORT || 8000, () => {
-        console.log(` Server is running at port : ${process.env.PORT}`);
-    })
-})
-.catch((err) => {
-    console.log("MONGO db connection failed !!! ", err);
-})
+// Connect to MongoDB
+const uri = 'YOUR_MONGODB_CONNECTION_STRING';
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('MongoDB Connected');
+    // Start the server after successful database connection
+    app.listen(8000, () => {
+      console.log('Server is running at port : 8000');
+    });
+  })
+  .catch(err => {
+    console.log('Failed to connect to MongoDB', err);
+  });
 
-
-
-
-
-
-
-
-
-
-/*
-import express from "express"
-const app = express()
-( async () => {
-    try {
-        await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`)
-        app.on("errror", (error) => {
-            console.log("ERRR: ", error);
-            throw error
-        })
-
-        app.listen(process.env.PORT, () => {
-            console.log(`App is listening on port ${process.env.PORT}`);
-        })
-
-    } catch (error) {
-        console.error("ERROR: ", error)
-        throw err
-    }
-})()
-
-*/
+// Error handling middleware
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    return res.status(400).json({ message: err.message });
+  } else if (err) {
+    return res.status(500).json({ message: err.message });
+  }
+  next();
+});
