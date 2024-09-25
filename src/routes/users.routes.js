@@ -4,16 +4,18 @@ import { upload } from '../middlewares/multer.middleware.js';
 
 const router = Router();
 
+// POST /api/v1/users/register
 router.route('/register').post(
   upload.fields([
     { name: 'avatar', maxCount: 1 },
     { name: 'coverImage', maxCount: 1 }
   ]),
-  (req, res, next) => {
+  async (req, res, next) => {
     try {
-      registerUser(req, res);
+      // Register user using the imported function
+      await registerUser(req, res);
     } catch (error) {
-      next(error);
+      next(error); // اگر کوئی خطا ہو تو اگلے مڈل ویئر کو کال کریں
     }
   }
 );

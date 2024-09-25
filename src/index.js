@@ -2,9 +2,14 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import usersRoutes from './routes/users.routes.js';
+import dotenv from 'dotenv';
+import multer from 'multer';
 
 // Initialize the Express application
 const app = express();
+
+// Load environment variables from .env file
+dotenv.config();
 
 // Middleware
 app.use(cors());
@@ -14,8 +19,8 @@ app.use(express.json());
 app.use('/api/users', usersRoutes);
 
 // Connect to MongoDB
-const uri = 'YOUR_MONGODB_CONNECTION_STRING';
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+const uri = process.env.MONGO_URI;
+mongoose.connect(uri)
   .then(() => {
     console.log('MongoDB Connected');
     // Start the server after successful database connection
